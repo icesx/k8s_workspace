@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-node-new
+  namespace: bjrdc-dev 
+spec:
+  selector:
+    matchLabels:
+      app: hello-node-new
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: hello-node-new 
+    spec:     # pod spec
+      containers: 
+      - name: hello-node-new 
+        image: bjrdc206.reg/bjrdc-dev/hello-node:v1.0.1 # image we pushed
+        ports:
+        - containerPort: 8080

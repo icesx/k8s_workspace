@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-config
+  namespace: bjrdc-dev
+data:
+  redis.conf: |
+    dir /data/redis
+    save 900 1
+    save 300 10
+    save 60 10000
+    bind 0.0.0.0

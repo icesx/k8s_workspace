@@ -1,0 +1,36 @@
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nginx-stateful
+  namespace: bjrdc-dev
+spec:
+  selector:
+    matchLabels:
+      app: nginx-stateful # has to match .spec.template.metadata.labels
+  serviceName: nginx-stateful
+  replicas: 3 # by default is 1
+  template:
+    metadata:
+      labels:
+        app: nginx-stateful # has to match .spec.selector.matchLabels
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: nginx-stateful
+        image: nginx:1.19.0
+        ports:
+        - containerPort: 80
+          name: web
+        volumeMounts:
+        - name: www
+          mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:
+  - metadata:
+      name: www
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: ceph-storageclass-stateful
+      resources:
+        requests:
+          storage: 500Mi

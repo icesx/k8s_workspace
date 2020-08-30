@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app: kibana
+  name: kibana
+  namespace: bjrdc-dev
+spec:
+  ports:
+  - port: 5601
+  selector:
+    app: kibana

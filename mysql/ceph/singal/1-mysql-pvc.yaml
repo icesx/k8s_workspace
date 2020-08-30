@@ -1,0 +1,15 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: ceph-mysql-pvc-01
+  namespace: bjrdc-dev
+spec:
+  selector:
+    matchLabels:
+      pv: ceph-mysql-pv-01
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+

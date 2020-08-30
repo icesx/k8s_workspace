@@ -1,0 +1,16 @@
+# Headless service for stable DNS entries of StatefulSet members.
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-stateful-headless
+  namespace: bjrdc-dev
+  labels:
+    app: redis-stateful
+spec:
+  ports:
+  - name: redis-stateful-port
+    port: 6379
+  clusterIP: None
+  selector:
+    app: redis-stateful
+

@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: es-stateful
+  namespace: bjrdc-dev
+spec:
+  selector:
+    matchLabels:
+      app: es-stateful 
+  serviceName: es-stateful-headless
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: es-stateful
+    spec:
+      initContainers:
+      - name: busybox-init
+        image: busybox
+        command:
+        - sh
+        - "-c"
+        - |
+          set -ex
+          chown -R 1000:1000 /usr/share/elasticsearch/data
+        volumeMounts:
+        - name: es-data
+          mountPath: /usr/share/elasticsearch/data 
+      containers:
+      - name: es-stateful
+        image: elasticsearch:6.8.11
+        command:
+        - bash
+        - "-c"
+        - |
+          set -ex
+          ulimit -n 1024000
+          exec su elasticsearch /usr/share/elasticsearch/bin/elasticsearch
+        env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+        ports:
+        - containerPort: 9200
+          protocol: TCP
+        - containerPort: 9300
+          protocol: TCP
+        volumeMounts:
+        - name: es-data
+          mountPath: /usr/share/elasticsearch/data
+        - name: es-config
+          mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+          subPath: elasticsearch.yml
+      volumes:
+        - name: es-config
+          configMap:
+            name: es-config
+  volumeClaimTemplates:
+  - metadata:
+      name: es-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: ceph-storageclass-stateful-es
+      resources:
+        requests:
+          storage: 5Gi

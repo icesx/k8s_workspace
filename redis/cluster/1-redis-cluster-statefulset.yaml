@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis-stateful
+  namespace: bjrdc-dev
+spec:
+  selector:
+    matchLabels:
+      app: redis-stateful 
+  serviceName: redis-stateful-headless
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: redis-stateful
+    spec:
+      containers:
+      - name: ubuntu
+        image: bjrdc206.reg/library/ubuntu:18.04.bjrdc-dev
+        imagePullPolicy: Always
+        command:
+        - bash
+        - "-c"
+        - |
+          set ex
+          python3  /data/cluster-boot.py
+          while true; do echo do...; sleep 10;done
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data
+        - name: redis-config
+          mountPath: /data/cluster-boot.py
+          subPath: redis-cluster-boot.py
+      - name: redis-stateful
+        image: redis:6.0.6
+        command:
+        - bash
+        - "-c"
+        - |
+          set -ex 
+          /usr/local/bin/redis-server /data/redis.conf --protected-mode no --cluster-announce-ip ${POD_IP} &
+          while :
+          do
+          if [ -f "/data/node_ok" ]; then            
+              rm -rf /data/node_ok
+              kill -9 $(ps -ef|grep redis-server|awk '{print $2}')
+              exec /usr/local/bin/redis-server /data/redis.conf --protected-mode no --cluster-announce-ip ${POD_IP}
+              break
+          else
+              echo "node_ok not prepare"
+              sleep 5
+          fi
+          done 
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        ports:
+        - containerPort: 6379
+          protocol: TCP
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data
+        - name: redis-config
+          mountPath: /data/redis.conf
+          subPath: redis.conf
+      volumes:
+        - name: redis-config
+          configMap:
+            name: redis-cluster-config
+  volumeClaimTemplates:
+  - metadata:
+      name: redis-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: ceph-storageclass-redis
+      resources:
+        requests:
+          storage: 2Gi

@@ -1,0 +1,16 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: spring-cloud-k8s-configmap
+  namespace: bjrdc-dev
+data:
+  application.yaml: |-
+    cn.xportal.cs.config.base: base 
+    ---
+    spring:
+      profiles: k8s
+    cn.xportal.cs.config.base: k8s.. 
+    ---
+    spring:
+      profiles: local
+    cn.xportal.cs.config.base: local 

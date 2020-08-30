@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafdrop
+  namespace: bjrdc-dev
+spec:
+  selector:
+    matchLabels:
+      app: kafdrop
+  template:
+    metadata:
+      labels:
+        app: kafdrop
+    spec:
+      containers:
+      - image: bjrdc206.reg/library/kafdrop:3.27.0
+        name: kafdrop
+        env: 
+        - name: KAFKA_BROKERCONNECT
+          value: kafka-stateful-0.kafka-stateful-headless:9092,kafka-stateful-1.kafka-stateful-headless:9092,kafka-stateful-2.kafka-stateful-headless:9092
+        ports:
+        - containerPort: 9000
+        livenessProbe:
+          httpGet:
+            path: /actuator
+            port: 9000
+          initialDelaySeconds: 10
+          periodSeconds: 10

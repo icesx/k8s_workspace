@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ceph-normal-demo-svc
+  namespace: bjrdc-dev
+  labels:
+    app: ceph-normal-demo-svc
+spec:
+  ports:
+  - port: 3000
+    targetPort: 8080
+    protocol: TCP
+  selector:
+    app: ceph-normal-demo-pod

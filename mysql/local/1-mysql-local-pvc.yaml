@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-local-pv
+  namespace: bjrdc-dev
+spec:
+  selector:
+    matchLabels:
+      pv: mysql-local-pv
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi

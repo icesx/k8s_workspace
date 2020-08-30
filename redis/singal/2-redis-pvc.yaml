@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ceph-redis-pvc
+  namespace: bjrdc-dev
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ceph-storageclass-redis 
+  resources:
+    requests:
+      storage: 3Gi

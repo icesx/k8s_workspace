@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ceph-rbd-demo
+  namespace: bjrdc-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ceph-rbd-demo
+  template:
+    metadata:
+      labels:
+        app: ceph-rbd-demo
+    spec:
+      containers:
+      - name: ceph-rbd-demo
+        image: bjrdc206.reg/bjrdc-dev/hello-node:v1.0.1
+        ports:
+        - containerPort: 80
+        volumeMounts:
+          - mountPath: "/data"
+            name: k8s-v1
+      volumes:
+        - name: k8s-v1
+          persistentVolumeClaim:
+            claimName: ceph-storageclass-pvc

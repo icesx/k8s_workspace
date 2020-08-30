@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-local
+  namespace: bjrdc-dev
+spec:
+  selector:
+    matchLabels:
+      app: mysql-local
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mysql-local
+    spec:
+      containers:
+      - image: mysql:5.7
+        name: mysql-local
+        env:
+          # Use secret in real usage
+        - name: MYSQL_ROOT_PASSWORD
+          value: xjgz@123
+        ports:
+        - containerPort: 3306
+          name: mysql-local
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-local-pv

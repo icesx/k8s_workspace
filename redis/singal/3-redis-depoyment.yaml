@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-ceph-singal
+  namespace: bjrdc-dev
+spec:
+  selector:
+    matchLabels:
+      app: redis-ceph-singal
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: redis-ceph-singal
+    spec:
+      containers:
+      - image: redis:6.0.6
+        name: redis
+        ports:
+        - containerPort: 6379
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data/redis
+        - name: redis-config
+          mountPath: /data/redis.conf
+          subPath: redis.conf
+        command:
+        - bash
+        - "-c"
+        - |
+          exec /usr/local/bin/redis-server /data/redis.conf
+      volumes:
+      - name: redis-data
+        persistentVolumeClaim: 
+          claimName: ceph-redis-pvc
+      - name: redis-config
+        configMap:
+          name: redis-config

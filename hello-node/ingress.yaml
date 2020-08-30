@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: hello-node-ingress
+  namespace: bjrdc-dev
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "20M"
+spec:
+  rules:
+  - host: ingress.bjrdc17
+    http:
+      paths:
+      - path: /hello-node
+        backend:
+          serviceName: hello-node
+          servicePort: 3000

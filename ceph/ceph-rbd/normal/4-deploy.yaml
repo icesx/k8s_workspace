@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ceph-normal-demo
+  namespace: bjrdc-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ceph-normal-demo-pod
+  template:
+    metadata:
+      labels:
+        app: ceph-normal-demo-pod
+    spec:
+      containers:
+      - name: ceph-normal-demo-container
+        image: bjrdc206.reg/bjrdc-dev/hello-node:v1.0.1
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+          - mountPath: "/data"
+            name: ceph-normal-pvc-name
+      volumes:
+        - name: ceph-normal-pvc-name
+          persistentVolumeClaim:
+            claimName: ceph-normal-pvc
