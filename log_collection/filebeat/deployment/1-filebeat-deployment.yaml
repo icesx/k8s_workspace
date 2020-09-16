@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: filebeat-d
+  namespace: bjrdc-dev
+spec:
+  selector:
+    matchLabels:
+      app: filebeat-d
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: filebeat-d
+    spec:
+      containers:
+      - image: bjrdc206.reg/library/elastic/filebeat:6.8.11
+        name: filebeat
+        command:
+        - sh
+        - "-c"
+        - |
+          filebeat -e &
+          sleep 5
+          filebeat setup --dashboards
+          filebeat modules enable system nginx mysql
+          while true;do sleep 10;echo sleep 5;done
+        volumeMounts:
+        - name: app-logs
+          mountPath: /logs
+        - name: filebeat-config
+          subPath: filebeat.yml
+          mountPath: /usr/share/filebeat/filebeat.yml
+        - name: filebeat-config
+          subPath: nginx.yml
+          mountPath: /usr/share/filebeat/modules.d/nginx.yml
+      - name: nginx
+        image: nginx:1.19.0
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: /var/log/nginx
+          name: app-logs
+      volumes:
+      - name: app-logs
+        emptyDir: {}
+      - name: filebeat-config
+        configMap:
+          name: filebeat-config

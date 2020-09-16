@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filebeat-config
+  namespace: bjrdc-dev
+data:
+  filebeat.yml: |
+    filebeat.config:
+      modules:
+        path: ${path.config}/modules.d/*.yml
+        reload.enabled: false
+    filebeat.inputs:
+    - type: log
+      enabled: true
+      paths:
+        - /logs/*
+    output.elasticsearch:
+      hosts: ["es-stateful-0.es-stateful-headless:9200","es-stateful-1.es-stateful-headless:9200","es-stateful-2.es-stateful-headless:9200"]
+      username: ""
+      password: ""
+    setup.kibana:
+      host: "kibana:5601"
+  nginx.yml: |
+    - module: nginx 
+      access:
+        enabled: true
+        var.paths: ["/logs/access*"]
+      error:
+        enabled: true
+        var.paths: ["/logs/error*"]
+

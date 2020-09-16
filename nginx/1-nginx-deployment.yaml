@@ -1,0 +1,27 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: bjrdc-dev
+spec:
+  selector:
+    matchLabels:
+      app: nginx 
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx 
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.19.0
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: /var/log/nginx
+          name: logs
+      volumes:
+      - name: logs
+        emptyDir: {}
