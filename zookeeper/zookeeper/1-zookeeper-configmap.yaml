@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zookeeper-config
+  namespace: bjrdc-dev
+data:
+  zookeeper-start.sh:
+    #!/bin/bash
+    sleep 5;
+    HOST=`hostname`;
+    ZOO_MY_ID_=${HOST##*-};
+    export ZOO_MY_ID=$((ZOO_MY_ID_+1));
+    export ZOO_SERVERS="server.1=zookeeper-stateful-0.zookeeper-stateful-headless:2888:3888;2181 server.2=zookeeper-stateful-1.zookeeper-stateful-headless:2888:3888;2181 server.3=zookeeper-stateful-2.zookeeper-stateful-headless:2888:3888;2181";
+    bash /docker-entrypoint.sh;
+    zkServer.sh start-foreground; 

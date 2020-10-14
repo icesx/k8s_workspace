@@ -9,15 +9,14 @@ spec:
       containers: 
       - name: ubuntu
         image: bjrdc206.reg/library/ubuntu:18.04.bjrdc-dev
-        imagePullPolicy: Always
         args:
         - /bin/sh
         - -c
-        - sleep 10; touch /tmp/healthy; sleep 30000
-        readinessProbe:           #就绪探针
+        - while true; do touch /tmp/healthy; sleep 300; echo doing; done
+        readinessProbe:
           exec:
             command:
             - cat
             - /tmp/healthy
-          initialDelaySeconds: 10         #10s之后开始第一次探测
+          initialDelaySeconds: 10
           periodSeconds: 5            

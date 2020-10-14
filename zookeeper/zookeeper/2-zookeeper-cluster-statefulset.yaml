@@ -13,19 +13,39 @@ spec:
     metadata:
       labels:
         app: zookeeper-stateful
-    spec:
+    spec: 
       containers:
       - name: zookeeper-stateful
         image: bjrdc206.reg/library/zookeeper:3.6.1
         command:
-        - bash
-        - "-c" 
+        - sh
+        - "-c"
         - |
           set -ex
-          start-zookeeper.sh --servers=3
+          bash /zookeeper-start.sh
+          #          while true;do echo doing...;sleep 10;done
+        ports:
+        - containerPort: 2181
+          protocol: TCP
+        - containerPort: 2888
+          protocol: TCP
+        - containerPort: 3888
+          protocol: TCP
+        livenessProbe:
+          tcpSocket:
+            port: 2181
+          initialDelaySeconds: 80
+          periodSeconds: 30
         volumeMounts:
         - name: zookeeper-data
-          mountPath: /var/lib/zookeeper
+          mountPath: /data
+        - name: zookeeper-config
+          mountPath: /zookeeper-start.sh
+          subPath: zookeeper-start.sh
+      volumes:
+      - name: zookeeper-config
+        configMap:
+          name: zookeeper-config
 
   volumeClaimTemplates:
   - metadata:

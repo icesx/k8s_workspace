@@ -12,11 +12,11 @@ spec:
         args:
         - /bin/sh
         - -c
-        - sleep 10; touch /tmp/healthy; sleep 30000
-        readinessProbe:           #就绪探针
+        - while true;do sleep 10; touch /tmp/healthy; echo doing;done
+        readinessProbe:     
           exec:
             command:
             - cat
             - /tmp/healthy
-          initialDelaySeconds: 10         #10s之后开始第一次探测
+          initialDelaySeconds: 10   
           periodSeconds: 5            
