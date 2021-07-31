@@ -3,7 +3,7 @@ kind: StorageClass
 metadata:
   name: ceph-storageclass
   namespace: bjrdc-dev
-provisioner: ceph.com/rbd
+provisioner: kubernetes.io/rbd
 parameters:
   monitors: 172.16.15.251
   adminId: admin

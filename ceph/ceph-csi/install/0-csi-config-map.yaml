@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: ConfigMap
+data:
+  config.json: |-
+    [
+      {
+        "clusterID": "5021e379-a950-49fa-bf5e-378354eba003",
+        "monitors": [
+          "172.16.15.251:6789"
+        ]
+      }
+    ]
+metadata:
+  name: ceph-csi-config
+  namespace: bjrdc-dev

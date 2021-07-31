@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: zipkin-ingress
+  namespace: bjrdc-dev
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "20M"
+spec:
+  rules:
+  - host: ingress.bjrdc17
+    http:
+      paths:
+      - path: /zipkin
+        backend:
+          serviceName: zipkin
+          servicePort: 9411

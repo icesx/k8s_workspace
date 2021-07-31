@@ -56,7 +56,7 @@ spec:
         - name: RUNNER_PRE_CLONE_SCRIPT
           value: "echo '172.16.15.7 bjrdc7' >> /etc/hosts"
         - name: RUNNER_PRE_BUILD_SCRIPT
-          value: "echo '172.16.15.9 bjrdc9' >> /etc/hosts"
+          value: for i in {1..254}; do echo 172.16.15.$i bjrdc$i >> /etc/hosts;done 
         ports:
         - containerPort: 9100
           name: http-metrics
@@ -65,6 +65,10 @@ spec:
         - name: gitlab-ci-runner-file
           mountPath: /scripts/run.sh
           subPath: run.sh
+          readOnly: true
+        - name: gitlab-ci-runner-file
+          mountPath: /scripts/sethost.sh
+          subPath: sethost.sh
           readOnly: true
       restartPolicy: Always
 

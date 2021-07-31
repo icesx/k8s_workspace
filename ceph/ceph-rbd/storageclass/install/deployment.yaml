@@ -21,4 +21,12 @@ spec:
         env:
         - name: PROVISIONER_NAME
           value: ceph.com/rbd
+        volumeMounts:
+        - mountPath: "/etc/ceph"
+          name: etc-ceph
+      
       serviceAccount: rbd-provisioner
+      volumes:
+        - name: etc-ceph
+          hostPath:
+            path: /etc/ceph

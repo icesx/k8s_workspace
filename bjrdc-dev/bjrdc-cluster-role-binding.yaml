@@ -9,5 +9,5 @@ roleRef:
   name: bjrdc-cr
 subjects:
 - kind: ServiceAccount
-  name: default
+  name: bjrdc-dev-service-account
   namespace: bjrdc-dev

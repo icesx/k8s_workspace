@@ -1,0 +1,12 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: ceph-storageclass-pvc
+  namespace: bjrdc-dev
+spec:
+  storageClassName: ceph-storageclass
+  accessModes:
+    - ReadWriteOnce 
+  resources:
+    requests:
+      storage: 800Mi
