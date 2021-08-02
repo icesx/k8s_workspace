@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-storageclass
+  name: nginx-cephfs
   namespace: bjrdc-dev
 spec:
   selector:
@@ -20,14 +20,10 @@ spec:
         ports:
         - containerPort: 80
         volumeMounts:
-        - name: logs
-          mountPath: /var/log/nginx
-        volumeDevices:
-        - name: www
-          devicePath: /dev/xvda
+          - name: mypvc
+            mountPath: /var/lib/www/html
       volumes:
-      - name: logs
-        emptyDir: {}
-      - name: www
-        persistentVolumeClaim: 
-          claimName: csi-rbd-sc-nginx-pvc
+        - name: mypvc
+          persistentVolumeClaim:
+            claimName: csi-cephfs-pvc
+            readOnly: false
