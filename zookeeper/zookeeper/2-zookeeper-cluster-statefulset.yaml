@@ -52,7 +52,7 @@ spec:
       name: zookeeper-data
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: ceph-storageclass-zookeeper
+      storageClassName: csi-rbd-sc
       resources:
         requests:
-          storage: 2Gi
+          storage: 230Mi
