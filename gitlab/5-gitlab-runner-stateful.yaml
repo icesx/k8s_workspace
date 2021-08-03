@@ -39,7 +39,7 @@ spec:
           defaultMode: 0755
       serviceAccountName: gitlab-ci
       containers:
-      - image: gitlab/gitlab-runner:v12.6.0
+      - image: gitlab/gitlab-runner:alpine-v14.1.0
         name: gitlab-ci-runner
         command:
         - /scripts/run.sh
